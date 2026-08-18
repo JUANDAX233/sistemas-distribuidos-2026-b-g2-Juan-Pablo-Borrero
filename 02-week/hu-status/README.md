@@ -5,28 +5,31 @@
 # Weekly Status - Week 02
 
 <!-- CONFIG-START - must match your profile repo (username/username) CONFIG -->
-- FULL_NAME:
-- GITHUB_USER:
-- TEAM:
-- SPRINT_GOAL:
+- FULL_NAME: JUAN PABLO BORRERO MORALES
+- GITHUB_USER: JUANDAX233
+- TEAM: BarberSaaS
+- SPRINT_GOAL: Best Practices Manual: Agile Methodologies (Scrum/Kanban) and Repository Management
 <!-- CONFIG-END -->
 
 ## 1. User stories worked this week
 | HU ID | Title | Status (todo/doing/done) | Evidence (PR or commit URL) |
 |---|---|---|---|
-| HU-XXX-001 |  |  |  |
+| HU-XXX-001 | NONE | NONE | NONE |
 
 ## 2. My individual contribution
--
+-We learned good scrum and canva practices
+-Create my weekly repository and my personal presentation repository
+-Created my weekly repository using Conventional Commits
+-I prepared a weekly summary of each session (ADR and Distributed architectures)
 
 ## 3. Blockers and risks
--
+-Learning the differences between scrum and canva
 
 ## 4. Plan for next week
--
+-Apply the best practices of Scrum and Canva in my next project
 
 ## 5. Compliance self-check
-- [ ] Conventional Commits - `type(scope): summary`
+- [X] Conventional Commits - `type(scope): summary`
 - [ ] Per-environment HU branch + PR to that environment (hu-xxx-dev -> develop, ...)
 - [ ] Testable acceptance criteria
 - [ ] Tests added/updated (unit / integration)
@@ -35,3 +38,13 @@
 
 ## 6. Evidence links
 -
+![REPOPERSONAL](REPOPERSONAL.jpeg)
+
+-https://github.com/JUANDAX233/sistemas-distribuidos-2026-b-g2-Juan-Pablo-Borrero.git
+![REPOWEEK](REPOWEEK.jpeg)
+
+![EVIWEEEK](EVIWEEK.jpg)
+
+![SCRUMJKAMBA](SCRUMJKAMBA.jpg)
+
+
