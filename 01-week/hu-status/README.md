@@ -41,3 +41,7 @@
 -
 ![Diagrama](poster_sistemas_distribuidos_mas_info_page-0001.png)
 
+
+## This week
+The core problem that BarberSaaS architecture solves (designed as a modular monolith ready to evolve into microservices) is the operational fragmentation and lack of real-time integrity experienced by independent barbershops in Colombia. Specifically: Critical containment of shared resources (the simultaneous booking problem): Multiple clients or receptionists may attempt to book the same time slot with the same barber at the exact same time, which in a system without strict control would lead to double-booking. Non-blocking asynchronous synchronization (notifications and loyalty): Ensuring that the user experience is not degraded when external services fail (such as the FCM notification gateway or SMTP email delivery), by decoupling critical transactional events from messaging tasks. Strict multi-tenant consistency: Ensuring absolute data isolation for each barbershop (barbershop_id) without compromising the read performance of analytical dashboards and barber-specific reports. To-do list (MVP 1) — Operations P
+
