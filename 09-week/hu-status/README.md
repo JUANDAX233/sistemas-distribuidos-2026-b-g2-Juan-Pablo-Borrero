@@ -16,7 +16,7 @@
 |---|---|---|---|
 | DOC-API-09-A | OpenAPI contracts for barbershop, schedule, loyalty, finance-inventory and platform-admin services | done | https://github.com/code-corhuila/barber-saas-docs/pull/35 |
 | DOC-API-09-B | Index the eight service contracts in `07-api/README.md` and record open contract decisions (OQ-06…OQ-11) | done | https://github.com/code-corhuila/barber-saas-docs/commit/839bb1e |
-| GOV-AGILE-08-A | SPEC-008: WIP limit, story map, MVP2 backlog, sprint-status (carried over from week 08) | doing | https://github.com/code-corhuila/barber-saas-docs/commit/6d7436f (branch pushed, PR not opened yet) |
+| GOV-AGILE-08-A | SPEC-008: WIP limit, story map, MVP2 backlog, sprint-status (carried over from week 08) | doing | https://github.com/code-corhuila/barber-saas-docs/issues/51 · PRs [#52](https://github.com/code-corhuila/barber-saas-docs/pull/52), [#53](https://github.com/code-corhuila/barber-saas-docs/pull/53), [#54](https://github.com/code-corhuila/barber-saas-docs/pull/54) (open, waiting for review) |
 | GOV-AGILE-08-B | SPEC-009: GitHub Project board | todo | Unblocked (`gh` now authenticated), not started |
 
 ## 2. My individual contribution
@@ -33,15 +33,21 @@
   `07-api/open-questions.md` (839bb1e).
 - PR #35: 6 commits, 7 files, +4087 lines. Approved by the reviewer (`ariel5253`) and
   merged on 2026-09-28.
+- Opened the SPEC-008 carry-over for review (2026-10-01): created issue #51 and split the
+  683-line commit `6d7436f` into three PRs from current `main` with `cherry-pick -x` (#52 WIP
+  limit + sprint status, #53 sprint-ready stories, #54 story map + MVP2 backlog), leaving out
+  the unrelated commit `5b9af66` and without rewriting the published branch.
 - Filled week 09 Session 1 (sprint) and Session 2 (planning) in this repo.
 
 ## 3. Blockers and risks
 - The 5 `-api` repos still contain only `README.md` + `CODEOWNERS`, so the contracts were
   derived from the monolith's controllers/DTOs (`barber-saas@develop`). They can drift once
   the real services are built.
-- SPEC-008 is still not merged: the branch has been pushed since 2026-09-27, but no PR was
-  opened. Its files (`story-map.md`, `mvp2-backlog.md`, `sprint-status.md`) are not on
-  `main`, and they are in Spanish while #42 moved DOCS to English.
+- SPEC-008 is not merged yet: PRs #52–#54 were opened on 2026-10-01 and wait for
+  `ariel5253`. #53 has 467 changed lines, above the 400-line limit (norm 9.2); the reason is
+  in the PR. #54 depends on #53, so the merge order matters.
+- Story ID conflict: issues #21–#24 use different IDs for part of the same scope as #53 (for
+  example #24 `HU-SADMIN-002` = `HU-SADMIN-001-B`). The team has to choose one scheme.
 - The team WIP limit (In Review ≤ 2) was not respected: 7 PRs (#36–#42) were in review at the
   same time on 2026-09-29 and 5 (#44–#48) on 2026-09-30.
 - No live planning poker with the team this week, so next week's estimates are individual
@@ -50,7 +56,8 @@
   AT-006 (the service catalog still describes the monolith) and the conflicting plan names.
 
 ## 4. Plan for next week
-- Open the SPEC-008 PR (rebase on `main`, translate to English) and get it reviewed (3 SP).
+- Get SPEC-008 PRs #52–#54 reviewed and merged in order (#52 → #53 → #54) and settle the
+  story-ID scheme with the team (3 SP).
 - Close OQ-01 (`429` in `auth-service.yaml`, 1 SP) and work on OQ-06…OQ-11 (5 SP).
 - Create the GitHub Project board (SPEC-009, 2 SP).
 - Run a real planning poker with the team to confirm the estimates in `02-session`.
@@ -67,5 +74,6 @@
 - https://github.com/code-corhuila/barber-saas-docs/pull/35
 - https://github.com/code-corhuila/barber-saas-docs/tree/main/07-api/contracts/openapi
 - https://github.com/code-corhuila/barber-saas-docs/blob/main/07-api/open-questions.md
-- https://github.com/code-corhuila/barber-saas-docs/tree/docs/008-agile-process-executable
+- https://github.com/code-corhuila/barber-saas-docs/issues/51
+- https://github.com/code-corhuila/barber-saas-docs/pull/52 · https://github.com/code-corhuila/barber-saas-docs/pull/53 · https://github.com/code-corhuila/barber-saas-docs/pull/54
 - [Session 1 (sprint)](../01-session/README.md) · [Session 2 (planning)](../02-session/README.md)

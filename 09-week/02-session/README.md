@@ -15,7 +15,8 @@
 | `09-microservices/service-catalog.md` todavía describe el monolito (AT-006) | PR #49 | 09-microservices |
 | Nombres de planes contradictorios (Basico/Pro/Premium vs Starter/Profesional/Premium) | PR #49 | 06-data / 01-context |
 | Artefactos de `deployment.md` que no existen todavía (compose, Dockerfiles, migraciones) | Sección "Pending" de `05-architecture/deployment.md` (PR #49) | 10-devops |
-| SPEC-008 sin PR (story map, backlog MVP2, sprint-status) | Rama `docs/008-agile-process-executable`, commit `6d7436f`; los archivos no están en `main` | 03 / 04 / 15 |
+| SPEC-008 sin mergear (story map, backlog MVP2, sprint-status, HUs partidas) | Issue [#51](https://github.com/code-corhuila/barber-saas-docs/issues/51); PRs [#52](https://github.com/code-corhuila/barber-saas-docs/pull/52), [#53](https://github.com/code-corhuila/barber-saas-docs/pull/53), [#54](https://github.com/code-corhuila/barber-saas-docs/pull/54) abiertos el 2026-10-01 | 03 / 04 / 15 |
+| Conflicto de IDs de HU: los issues #21–#24 usan IDs distintos a los del #53 (p. ej. #24 `HU-SADMIN-002` = `HU-SADMIN-001-B`) | Descripción del PR #53 | 04-requirements |
 | Board de GitHub Projects (SPEC-009) | Ya no está bloqueado: `gh auth status` está activo como `JUANDAX233` desde el 2026-09-28 | 15-project-control |
 
 ## Selección para la semana 10 — estimación y dependencias
@@ -25,7 +26,7 @@ el equipo**. Hay que validar estos números en la próxima sesión conjunta.
 
 | # | Ítem | Responsable propuesto | Estimación (SP) | Depende de |
 |---|------|-----------------------|-----------------|------------|
-| 1 | Abrir el PR de SPEC-008, rebasado sobre `main` y traducido al inglés (regla de idioma de #42) | Juan Pablo | 3 | — |
+| 1 | Llevar a merge los PRs #52 → #53 → #54 de SPEC-008 y acordar el esquema de IDs de HU | Juan Pablo | 3 | Aprobación de `ariel5253`; decisión del equipo sobre los IDs |
 | 2 | Cerrar OQ-06…OQ-11 en los contratos o pasarlas a ADR | Juan Pablo | 5 | Decisión del equipo en cada OQ |
 | 3 | Cerrar OQ-01: `429` en `auth-service.yaml` | Juan Pablo | 1 | — |
 | 4 | Crear el board de GitHub Projects (SPEC-009) | Juan Pablo | 2 | — |

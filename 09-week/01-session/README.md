@@ -23,7 +23,7 @@ de producto: los 29 repos `barber-saas-*` siguen solo con `README.md` y `.github
 | Traducción al inglés de los documentos restantes | todas | Daniel | ✅ Mergeado — [#42](https://github.com/code-corhuila/barber-saas-docs/pull/42) |
 | Diagramas C4, UML (secuencia/estado) y ER por dominio | 08-diagrams | Daniel | ✅ Mergeado — [#44](https://github.com/code-corhuila/barber-saas-docs/pull/44)…[#48](https://github.com/code-corhuila/barber-saas-docs/pull/48) |
 | Ítems rojos de gobernanza, arquitectura y datos + revisión | 00 / 05 / 06 | Carlos | ✅ Mergeado — [#49](https://github.com/code-corhuila/barber-saas-docs/pull/49), [#50](https://github.com/code-corhuila/barber-saas-docs/pull/50) |
-| SPEC-008 (WIP limit, story map, backlog MVP2) — arrastre de la semana 08 | 03 / 04 / 15 | Juan Pablo | 🟡 Rama `docs/008-agile-process-executable` publicada (commit `6d7436f`), **sin PR abierto** |
+| SPEC-008 (WIP limit, story map, backlog MVP2) — arrastre de la semana 08 | 03 / 04 / 15 | Juan Pablo | 🟡 En revisión — issue [#51](https://github.com/code-corhuila/barber-saas-docs/issues/51), PRs [#52](https://github.com/code-corhuila/barber-saas-docs/pull/52), [#53](https://github.com/code-corhuila/barber-saas-docs/pull/53), [#54](https://github.com/code-corhuila/barber-saas-docs/pull/54) |
 
 ## WIP limit aplicado
 
@@ -43,7 +43,7 @@ Formato: ayer / hoy / bloqueos.
 | 2026-09-28 | Cierre de la semana 08: commit `32a1408` (WEEKLY) y push de la rama `docs/008-agile-process-executable` (DOCS) | Escribir los 5 contratos OpenAPI que faltaban (`566aed8`, `c7dfc5b`, `d29be4f`, `0915077`, `babb39a`) e indexarlos (`839bb1e`) → PR #35, aprobado por `ariel5253` y mergeado | Los 5 repos `-api` están vacíos, así que los contratos se derivaron de los controladores y DTOs del monolito (`barber-saas@develop`). Las decisiones abiertas quedaron como OQ-06…OQ-11 en `07-api/open-questions.md` |
 | 2026-09-29 | PR #35 mergeado | Sin commits míos. El equipo mergeó #36–#42 (arquitectura, datos y traducción) | — |
 | 2026-09-30 | — | Sin commits míos. El equipo mergeó #44–#50 (diagramas e ítems rojos) | — |
-| 2026-10-01 | — | Escribí estas sesiones y el hu-status de la semana 09 | SPEC-008 sigue sin PR |
+| 2026-10-01 | — | Escribí estas sesiones y el hu-status de la semana 09. Abrí el issue #51 y partí SPEC-008 en los PRs #52–#54 (`cherry-pick -x` desde `6d7436f`) para cumplir el límite de 400 líneas | #53 sigue en 467 líneas (justificado en el PR); conflicto de IDs con los issues #21–#24 |
 
 ## Throughput
 
@@ -51,6 +51,7 @@ Formato: ayer / hoy / bloqueos.
   Juan Pablo 1), según `gh pr list --search "merged:2026-09-28..2026-10-04"`.
 - **Individual:** 1 PR (#35) con 6 commits y +4087 líneas en 7 archivos:
   5 contratos YAML, `07-api/README.md` y `07-api/open-questions.md`.
+  Además, 3 PRs abiertos el 2026-10-01 (#52–#54, SPEC-008), todavía en revisión.
 
 ## Referencias
 
