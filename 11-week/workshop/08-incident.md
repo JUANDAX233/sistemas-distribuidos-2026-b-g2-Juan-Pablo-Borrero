@@ -74,3 +74,94 @@ over 3 s every grant with an `appointmentId` fails once, with no retry.
 | 12:20 | `LoyaltyStickerLatencyFastBurn` pages (83.33 % over 1 h); `SlowBurn` pages after its 15 minutes |
 | 12:25 | `FastBurn` clears: five clean minutes after the fix |
 | 12:40 - 12:50 | `SlowBurn` still firing at 12:40 (12.5 % over 6 h), clear by 12:50 when the failures leave its 30-minute window |
+
+## Postmortem
+
+Blameless format. The incident is the drill above, placed at the Saturday midday peak; the cause
+was injected, so "root cause" names what the drill proves about the system, not a person.
+
+**Summary.** For 50 minutes appointment-api answered slowly. For the first 30 minutes every
+sticker took 2 s and no alert fired; for the last 20 every sticker failed with `500` after 3 s,
+and the first page came 7 minutes into that phase.
+
+**Impact.**
+
+| Measure | Value | Share of the 30-day budget (`05-slo.md`) |
+|---|---|---|
+| Failed grants (SLO-LOY-1) | 90 | 90 / 136 = **66 %** in 20 minutes |
+| Grants slower than 0.5 s (SLO-LOY-2) | 225 | 225 / 1,365 = **16.5 %** |
+| Barbers affected | Every barber of every barbershop granting with the visit | - |
+| Stickers lost | 0 once the barber repeats the grant, or later through `AppointmentCompleted` (`DEC-LOY-05`) | - |
+
+The replay rounds the traffic to 1.5 grants per minute (1,080 a day) where `05-slo.md` uses
+1,050; the shares above use the budget of `05-slo.md` and are about 3 % pessimistic.
+
+**Timeline (Saturday).**
+
+| Time | Event |
+|---|---|
+| 11:30 | appointment-api starts answering in 2 s. Grants succeed, slowly. `loyalty_dependency_request_duration_seconds` p95 jumps to 2 s; nothing alerts on it |
+| 12:00 | appointment-api passes 3 s. Every grant with an `appointmentId` fails with `500`; `dependency.timeout` lines start |
+| 12:07 | `LoyaltyStickerErrorBudgetFastBurn` pages Juan Pablo Borrero (11.67 % failed over 1 h) |
+| 12:10 | Runbook section 1: the `trace_id` of a failed grant shows the 3 s wait on `GET /api/v1/appointments/{id}`. Barbers are told to grant without the visit |
+| 12:20 | appointment-api restored. `LoyaltyStickerLatencyFastBurn` pages anyway: its 1-hour window still holds the slow grants |
+| 12:25 | Fast burn clears |
+| 12:50 | Slow burn clears; incident closed |
+
+**Root cause.** loyalty-api depends synchronously on appointment-api for every grant that names a
+visit, with a 3 s timeout and no fallback. Below 3 s the dependency's latency passes straight to
+the barber; above 3 s it becomes a failure.
+
+**Findings.**
+
+1. **Thirty minutes of 100 % slow grants fired nothing.** With uniform traffic the 1-hour slow
+   ratio reaches the 72 % threshold of `LoyaltyStickerLatencyFastBurn` only after 0.72 x 60 =
+   43.2 minutes, plus its 2-minute `for`: about 45 minutes. Had appointment-api recovered at
+   12:00, the 135 slow grants (9.9 % of the latency budget) would have left no alert, and the
+   daily ticket would not fire either (10.7 % against 15 %).
+2. **The timeout answers `500 INTERNAL_ERROR`.** The barber's app cannot tell "loyalty-api is
+   broken" from "try again in a minute"; a `503` would say it.
+3. **No circuit breaker.** Each failed grant waits the full 3 s. At 4.5 grants per minute that
+   holds 4.5 x 3 / 60 = 0.23 Tomcat threads on average out of 200, so nothing saturates at this
+   traffic; the cost is the barber's time, not capacity.
+4. **The pages would not reach anybody today.** `barber-saas-infra-postgres` runs Prometheus
+   without `rule_files` and without Alertmanager (`06-alert-policy.md`); in the real platform the
+   first signal would be a barber's complaint.
+5. **Alerts outlive the fix.** The latency page arrived when the problem was already gone, and
+   the slow burn stayed 30 minutes after it; the runbook's "resolved when" criteria are needed.
+
+**What went well.** One `trace_id` led from the failed grant to the slow downstream call in one
+search; the `outcome` label kept `rejected` and `not_found` out of the error budget; the volume
+guard was not in the way at midday traffic.
+
+## Action items
+
+**AI-1 - Early warning on the dependency** (owner: Juan Pablo Borrero, `barber-saas-loyalty-api`)
+```gherkin
+Given the p95 of loyalty_dependency_request_duration_seconds{dependency="appointment-api"} is above 1 s
+When it stays there for 10 minutes with at least 20 grants
+Then a ticket alert LoyaltyAppointmentDependencySlow reaches the owner of appointment-api
+```
+
+**AI-2 - A timeout is a 503** (owner: Juan Pablo Borrero, `barber-saas-loyalty-api`)
+```gherkin
+Given appointment-api does not answer GET /api/v1/appointments/{id} within 3 s
+When a barber grants a sticker with that appointmentId
+Then loyalty-api answers 503 with Retry-After and the grant is counted with outcome="failed"
+```
+
+**AI-3 - Fail fast while appointment-api is down** (owner: Juan Pablo Borrero)
+```gherkin
+Given five grants in a row ended in dependency.timeout within one minute
+When another grant names an appointment in the next 30 seconds
+Then loyalty-api answers 503 in less than 100 ms without calling appointment-api
+And one grant after the 30 seconds probes appointment-api again
+```
+
+**AI-4 - Load the rules** (owner: Daniel Cerquera, `barber-saas-infra-postgres`)
+```gherkin
+Given the observability profile of barber-saas-infra-postgres starts
+When Prometheus loads its configuration
+Then rule_files includes the rules of 06-alerts.yml, Alertmanager routes severity=page to the owner,
+And CI runs promtool check rules and promtool test rules on every pull request
+```
