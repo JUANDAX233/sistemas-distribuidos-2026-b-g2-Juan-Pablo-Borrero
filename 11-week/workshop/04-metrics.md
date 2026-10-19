@@ -1,7 +1,8 @@
 # CP4 - Golden Signals and Metric Catalog
 
 The metrics of the sticker journey (HU-LOY-001), one table per service. Names are snake_case with
-the unit as suffix and `_total` on counters. The two `loyalty_sticker_*` metrics are the ones
+the unit as suffix and `_total` on counters. The two `loyalty_sticker_*` metrics and
+`loyalty_dependency_request_duration_seconds` (outcome `found`, `not_found`, `failed`) are the ones
 `03-instrumentation/loyalty-api` already exposes on `/metrics`; the rest is the target catalog.
 
 ## barber-saas-api-gateway (NGINX, edge hop)

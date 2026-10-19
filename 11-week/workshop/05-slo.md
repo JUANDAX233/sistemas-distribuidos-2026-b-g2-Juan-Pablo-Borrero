@@ -51,7 +51,7 @@ Why these numbers:
   the automatic sticker of `AppointmentCompleted` (`DEC-LOY-05`) still credits the visit.
   `rejected` (the `422` of a duplicate sticker) and `not_found` are correct answers, so they
   count as good events.
-- **SLO-LOY-2, 0.5 s.** The threshold is the `le="0.5"` bucket that `StickerController`
+- **SLO-LOY-2, 0.5 s.** The threshold is the `le="0.5"` bucket that `StickerMetrics`
   already registers, so the SLI is exact and not interpolated. It sits between NFR-001's
   300 ms for critical endpoints and 1000 ms for the rest: the client is still in the chair
   when the barber taps the grant. `failed` requests stay in the denominator, because a
