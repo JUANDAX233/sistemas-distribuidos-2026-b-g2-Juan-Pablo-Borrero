@@ -1,21 +1,21 @@
 package co.edu.corhuila.barbersaas.loyalty.observability;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
-import java.io.IOException;
-import java.time.Duration;
+import co.edu.corhuila.barbersaas.loyalty.observability.StickerMetrics.Outcome;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-/** POST /api/v1/loyalty/stickers reduced to the hop that leaves the service: the appointment check. */
+/** POST /api/v1/loyalty/stickers cut down to the hop that leaves loyalty-api: the appointment check (CP1, step 4). */
 @RestController
 class StickerController {
 
@@ -23,44 +23,51 @@ class StickerController {
 
     private static final Logger log = LoggerFactory.getLogger("loyalty.sticker");
     private final AppointmentApiClient appointments;
-    private final MeterRegistry registry;
-    private final Timer latency;
+    private final StickerMetrics metrics;
 
-    StickerController(AppointmentApiClient appointments, MeterRegistry registry) {
+    StickerController(AppointmentApiClient appointments, StickerMetrics metrics) {
         this.appointments = appointments;
-        this.registry = registry;
-        this.latency = Timer.builder("loyalty.sticker.request.duration")
-                .description("Time to answer POST /api/v1/loyalty/stickers")
-                .serviceLevelObjectives(Duration.ofMillis(50), Duration.ofMillis(100), Duration.ofMillis(250),
-                        Duration.ofMillis(500), Duration.ofSeconds(1), Duration.ofMillis(2500), Duration.ofSeconds(5))
-                .register(registry);
+        this.metrics = metrics;
     }
 
     @PostMapping("/api/v1/loyalty/stickers")
     ResponseEntity<Map<String, Object>> grant(@RequestBody GrantStickerRequest body,
-                                              @RequestHeader(value = "Authorization", required = false) String auth) {
-        long start = System.nanoTime();
-        String outcome = "failed";
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            HttpServletRequest request) {
+        long started = System.nanoTime();
+        Outcome outcome = decide(body, authorization);
+        metrics.grant(outcome, System.nanoTime() - started);
+        request.setAttribute(TraceInterceptor.OUTCOME, outcome.label());
+        return switch (outcome) {
+            case GRANTED -> ResponseEntity.status(HttpStatus.CREATED)
+                    .body(Collections.singletonMap("clientId", body.clientId()));
+            case NOT_FOUND -> apiError(HttpStatus.NOT_FOUND, "NOT_FOUND", "Appointment not found");
+            default -> apiError(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "unexpected error");
+        };
+    }
+
+    private Outcome decide(GrantStickerRequest body, String authorization) {
         try {
-            if (body.appointmentId() != null && !appointments.exists(body.appointmentId(), auth)) {
-                outcome = "not_found";
-                return ResponseEntity.status(404).body(Map.of("error", "NOT_FOUND", "message", "Appointment not found"));
+            if (body.appointmentId() != null && !appointments.exists(body.appointmentId(), authorization)) {
+                return Outcome.NOT_FOUND;
             }
-            outcome = "granted";
-            log.atInfo().addKeyValue("event", "loyalty.sticker.granted")
-                    .addKeyValue("appointment_id", body.appointmentId()).log("Sticker granted");
-            return ResponseEntity.status(201).body(Map.of("clientId", body.clientId()));
-        } catch (IOException | InterruptedException e) {
-            if (e instanceof InterruptedException) {
-                Thread.currentThread().interrupt();
-            }
-            log.atError().addKeyValue("event", "dependency.timeout").addKeyValue("dependency", "appointment-api")
-                    .addKeyValue("duration_ms", (System.nanoTime() - start) / 1_000_000)
-                    .log("appointment-api failed: {}", e.toString());
-            return ResponseEntity.status(500).body(Map.of("error", "INTERNAL_ERROR", "message", "unexpected error"));
-        } finally {
-            Counter.builder("loyalty.sticker.requests").tag("outcome", outcome).register(registry).increment();
-            latency.record(Duration.ofNanos(System.nanoTime() - start));
+        } catch (AppointmentApiClient.DependencyFailure e) {
+            log.atError().addKeyValue("event", e.timedOut() ? "dependency.timeout" : "dependency.failure")
+                    .addKeyValue("duration_ms", e.elapsedMs())
+                    .addKeyValue("dependency", "appointment-api")
+                    .addKeyValue("error_code", "INTERNAL_ERROR")
+                    .log(e.getMessage());
+            return Outcome.FAILED;
         }
+        log.atInfo().addKeyValue("event", "loyalty.sticker.granted")
+                .addKeyValue("appointment_id", body.appointmentId())
+                .log("Sticker granted");
+        return Outcome.GRANTED;
+    }
+
+    /** The error and message fields of ErrorResponse in _shared.yaml. */
+    private static ResponseEntity<Map<String, Object>> apiError(HttpStatus status, String code, String message) {
+        Map<String, Object> body = Map.of("error", code, "message", message);
+        return new ResponseEntity<>(body, status);
     }
 }
