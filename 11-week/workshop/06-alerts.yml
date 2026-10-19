@@ -1,0 +1,105 @@
+# CP7 - Burn-rate alerts for the sticker journey (HU-LOY-001), from the SLOs of 05-slo.md.
+# Error budgets over 30 days: SLO-LOY-1 0.5 %, SLO-LOY-2 5 %, SLO-LOY-3 1 %.
+# A burn rate of N spends the budget N times faster than allowed; the threshold is N x budget.
+
+groups:
+  - name: loyalty-sticker-slo-ratios
+    interval: 30s
+    rules:
+      # SLO-LOY-1: share of grants answered with outcome="failed" (rejected and not_found are good).
+      - record: loyalty:sticker_failed_ratio:rate5m
+        expr: sum(rate(loyalty_sticker_requests_total{outcome="failed"}[5m])) / sum(rate(loyalty_sticker_requests_total[5m]))
+      - record: loyalty:sticker_failed_ratio:rate30m
+        expr: sum(rate(loyalty_sticker_requests_total{outcome="failed"}[30m])) / sum(rate(loyalty_sticker_requests_total[30m]))
+      - record: loyalty:sticker_failed_ratio:rate1h
+        expr: sum(rate(loyalty_sticker_requests_total{outcome="failed"}[1h])) / sum(rate(loyalty_sticker_requests_total[1h]))
+      - record: loyalty:sticker_failed_ratio:rate2h
+        expr: sum(rate(loyalty_sticker_requests_total{outcome="failed"}[2h])) / sum(rate(loyalty_sticker_requests_total[2h]))
+      - record: loyalty:sticker_failed_ratio:rate6h
+        expr: sum(rate(loyalty_sticker_requests_total{outcome="failed"}[6h])) / sum(rate(loyalty_sticker_requests_total[6h]))
+      - record: loyalty:sticker_failed_ratio:rate1d
+        expr: sum(rate(loyalty_sticker_requests_total{outcome="failed"}[1d])) / sum(rate(loyalty_sticker_requests_total[1d]))
+      # SLO-LOY-2: share of grants slower than the le="0.5" bucket.
+      - record: loyalty:sticker_slow_ratio:rate5m
+        expr: 1 - sum(rate(loyalty_sticker_request_duration_seconds_bucket{le="0.5"}[5m])) / sum(rate(loyalty_sticker_request_duration_seconds_count[5m]))
+      - record: loyalty:sticker_slow_ratio:rate1h
+        expr: 1 - sum(rate(loyalty_sticker_request_duration_seconds_bucket{le="0.5"}[1h])) / sum(rate(loyalty_sticker_request_duration_seconds_count[1h]))
+      - record: loyalty:sticker_slow_ratio:rate2h
+        expr: 1 - sum(rate(loyalty_sticker_request_duration_seconds_bucket{le="0.5"}[2h])) / sum(rate(loyalty_sticker_request_duration_seconds_count[2h]))
+      - record: loyalty:sticker_slow_ratio:rate1d
+        expr: 1 - sum(rate(loyalty_sticker_request_duration_seconds_bucket{le="0.5"}[1d])) / sum(rate(loyalty_sticker_request_duration_seconds_count[1d]))
+      # SLO-LOY-3: share of StickerGranted delivered later than 60 s. The worker is Python, whose
+      # client writes le="60.0"; the regex accepts both spellings.
+      - record: worker:sticker_granted_late_ratio:rate2h
+        expr: 1 - sum(rate(worker_event_delivery_lag_seconds_bucket{event_type="StickerGranted",le=~"60(\\.0)?"}[2h])) / sum(rate(worker_event_delivery_lag_seconds_count{event_type="StickerGranted"}[2h]))
+      - record: worker:sticker_granted_late_ratio:rate1d
+        expr: 1 - sum(rate(worker_event_delivery_lag_seconds_bucket{event_type="StickerGranted",le=~"60(\\.0)?"}[1d])) / sum(rate(worker_event_delivery_lag_seconds_count{event_type="StickerGranted"}[1d]))
+
+  - name: loyalty-sticker-slo-alerts
+    rules:
+      # 14.4 x 0.005 = 0.072: 2 % of the 30-day budget gone in 1 hour. At least 20 grants in the
+      # hour, so one failed tap out of a handful at opening time does not wake anybody.
+      - alert: LoyaltyStickerErrorBudgetFastBurn
+        expr: |
+          loyalty:sticker_failed_ratio:rate1h > (14.4 * 0.005)
+          and loyalty:sticker_failed_ratio:rate5m > (14.4 * 0.005)
+          and on() sum(increase(loyalty_sticker_requests_total[1h])) >= 20
+        for: 2m
+        labels: {severity: page, service: loyalty-api, slo: SLO-LOY-1, owner: juan-pablo-borrero}
+        annotations:
+          summary: "Sticker grants failing {{ $value | humanizePercentage }} over 1 h (budget burning 14.4x)"
+          description: "More than 7.2 % of POST /api/v1/loyalty/stickers answer 500; check appointment-api first (dependency.timeout)."
+          runbook_url: https://github.com/JUANDAX233/sistemas-distribuidos-2026-b-g2-Juan-Pablo-Borrero/blob/main/11-week/workshop/07-runbook.md#1-loyaltystickererrorbudgetfastburn
+      # 6 x 0.005 = 0.03: 5 % of the budget in 6 hours.
+      - alert: LoyaltyStickerErrorBudgetSlowBurn
+        expr: |
+          loyalty:sticker_failed_ratio:rate6h > (6 * 0.005)
+          and loyalty:sticker_failed_ratio:rate30m > (6 * 0.005)
+          and on() sum(increase(loyalty_sticker_requests_total[6h])) >= 60
+        for: 15m
+        labels: {severity: page, service: loyalty-api, slo: SLO-LOY-1, owner: juan-pablo-borrero}
+        annotations:
+          summary: "Sticker grants failing {{ $value | humanizePercentage }} over 6 h (budget burning 6x)"
+          description: "A sustained share above 3 % of failed grants; the 30-day budget of 136 grants runs out in 5 days."
+          runbook_url: https://github.com/JUANDAX233/sistemas-distribuidos-2026-b-g2-Juan-Pablo-Borrero/blob/main/11-week/workshop/07-runbook.md#2-loyaltystickererrorbudgetslowburn
+      # 3 x 0.005 = 0.015: 10 % of the budget in a day. A ticket, worked in opening hours.
+      - alert: LoyaltyStickerErrorBudgetDailyBurn
+        expr: |
+          loyalty:sticker_failed_ratio:rate1d > (3 * 0.005)
+          and loyalty:sticker_failed_ratio:rate2h > (3 * 0.005)
+        for: 1h
+        labels: {severity: ticket, service: loyalty-api, slo: SLO-LOY-1, owner: juan-pablo-borrero}
+        annotations:
+          summary: "Sticker grants failing {{ $value | humanizePercentage }} over 1 day (budget burning 3x)"
+          runbook_url: https://github.com/JUANDAX233/sistemas-distribuidos-2026-b-g2-Juan-Pablo-Borrero/blob/main/11-week/workshop/07-runbook.md#3-loyaltystickererrorbudgetdailyburn
+      # 14.4 x 0.05 = 0.72: most grants slower than 0.5 s for an hour.
+      - alert: LoyaltyStickerLatencyFastBurn
+        expr: |
+          loyalty:sticker_slow_ratio:rate1h > (14.4 * 0.05)
+          and loyalty:sticker_slow_ratio:rate5m > (14.4 * 0.05)
+          and on() sum(increase(loyalty_sticker_requests_total[1h])) >= 20
+        for: 2m
+        labels: {severity: page, service: loyalty-api, slo: SLO-LOY-2, owner: juan-pablo-borrero}
+        annotations:
+          summary: "{{ $value | humanizePercentage }} of sticker grants slower than 0.5 s over 1 h"
+          runbook_url: https://github.com/JUANDAX233/sistemas-distribuidos-2026-b-g2-Juan-Pablo-Borrero/blob/main/11-week/workshop/07-runbook.md#4-loyaltystickerlatencyfastburn
+      # 3 x 0.05 = 0.15 over a day.
+      - alert: LoyaltyStickerLatencyDailyBurn
+        expr: |
+          loyalty:sticker_slow_ratio:rate1d > (3 * 0.05)
+          and loyalty:sticker_slow_ratio:rate2h > (3 * 0.05)
+        for: 1h
+        labels: {severity: ticket, service: loyalty-api, slo: SLO-LOY-2, owner: juan-pablo-borrero}
+        annotations:
+          summary: "{{ $value | humanizePercentage }} of sticker grants slower than 0.5 s over 1 day"
+          runbook_url: https://github.com/JUANDAX233/sistemas-distribuidos-2026-b-g2-Juan-Pablo-Borrero/blob/main/11-week/workshop/07-runbook.md#5-loyaltystickerlatencydailyburn
+      # 3 x 0.01 = 0.03 of StickerGranted later than 60 s. The sticker is already saved: a ticket.
+      - alert: StickerGrantedDeliveryLate
+        expr: |
+          worker:sticker_granted_late_ratio:rate1d > (3 * 0.01)
+          and worker:sticker_granted_late_ratio:rate2h > (3 * 0.01)
+        for: 1h
+        labels: {severity: ticket, service: barber-saas-worker, slo: SLO-LOY-3, owner: daniel-cerquera}
+        annotations:
+          summary: "{{ $value | humanizePercentage }} of StickerGranted notifications later than 60 s over 1 day"
+          runbook_url: https://github.com/JUANDAX233/sistemas-distribuidos-2026-b-g2-Juan-Pablo-Borrero/blob/main/11-week/workshop/07-runbook.md#6-stickergranteddeliverylate
