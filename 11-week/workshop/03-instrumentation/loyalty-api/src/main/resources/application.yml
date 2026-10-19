@@ -3,6 +3,14 @@ server:
 spring:
   application:
     name: loyalty-api
+management:
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: prometheus
+      path-mapping:
+        prometheus: metrics
 logging:
   structured:
     format:
@@ -10,3 +18,4 @@ logging:
 loyalty:
   version: 2.0.0
   environment: ${ENVIRONMENT:dev}
+  appointment-api-url: ${APPOINTMENT_API_URL:http://appointment-api:8080}
