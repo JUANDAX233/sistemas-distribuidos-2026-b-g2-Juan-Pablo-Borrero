@@ -1,2 +1,6 @@
 node_modules/
 package-lock.json
+
+# Local tools and settings, never versioned
+08-week/hu-status/oracleJdk-27/
+CLAUDE.md
