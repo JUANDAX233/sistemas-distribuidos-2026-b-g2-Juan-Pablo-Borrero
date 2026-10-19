@@ -1,0 +1,48 @@
+# promtool test rules 08-incident.test.yml - the CP9 incident replayed at the traffic of 05-slo.md.
+# t=0 is Friday 08:00. Both days: 1.5 grants per minute from 08:00 (20:00 closes on Friday), and
+# 4.5 per minute (the 3x midday peak) from Saturday 11:00. appointment-api answers in 2 s from
+# 11:30 (t=1650), in more than 3 s from 12:00 (t=1680), and is fixed at 12:20 (t=1700).
+# 1.5 and 4.5 are exact in floating point: 4.4 drifts, and a counter that drops by 1e-12 is a reset.
+rule_files:
+  - 06-alerts.yml
+
+evaluation_interval: 1m
+
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'loyalty_sticker_requests_total{outcome="granted"}'
+        values: '0+1.5x720 1080x719 1081.5+1.5x179 1354.5+4.5x59 1620x19 1624.5+4.5x39'
+      - series: 'loyalty_sticker_requests_total{outcome="failed"}'
+        values: '0x1680 4.5+4.5x19 90x40'
+      - series: 'loyalty_sticker_request_duration_seconds_bucket{le="0.5"}'
+        values: '0+1.5x720 1080x719 1081.5+1.5x179 1354.5+4.5x29 1485x49 1489.5+4.5x39'
+      - series: 'loyalty_sticker_request_duration_seconds_count'
+        values: '0+1.5x720 1080x719 1081.5+1.5x179 1354.5+4.5x119'
+    alert_rule_test:
+      # 12:00: 30 minutes in which every grant took 2 s. Slow ratio 50 % (1 h), 10.7 % (1 d): no alert.
+      - {eval_time: 1680m, alertname: LoyaltyStickerLatencyFastBurn, exp_alerts: []}
+      - {eval_time: 1680m, alertname: LoyaltyStickerLatencyDailyBurn, exp_alerts: []}
+      # 12:06: failed ratio 10 % over 1 h since 12:05, but the 2-minute `for` has not passed.
+      - {eval_time: 1686m, alertname: LoyaltyStickerErrorBudgetFastBurn, exp_alerts: []}
+      # 12:07: the page.
+      - eval_time: 1687m
+        alertname: LoyaltyStickerErrorBudgetFastBurn
+        exp_alerts:
+          - exp_labels: {severity: page, service: loyalty-api, slo: SLO-LOY-1, owner: juan-pablo-borrero}
+            exp_annotations:
+              summary: "Sticker grants failing 11.67% over 1 h (budget burning 14.4x)"
+              description: "More than 7.2 % of POST /api/v1/loyalty/stickers answer 500; check appointment-api first (dependency.timeout)."
+              runbook_url: https://github.com/JUANDAX233/sistemas-distribuidos-2026-b-g2-Juan-Pablo-Borrero/blob/main/11-week/workshop/07-runbook.md#1-loyaltystickererrorbudgetfastburn
+      # 12:20: the latency page comes 50 minutes after the slowdown began.
+      - eval_time: 1700m
+        alertname: LoyaltyStickerLatencyFastBurn
+        exp_alerts:
+          - exp_labels: {severity: page, service: loyalty-api, slo: SLO-LOY-2, owner: juan-pablo-borrero}
+            exp_annotations:
+              summary: "83.33% of sticker grants slower than 0.5 s over 1 h"
+              runbook_url: https://github.com/JUANDAX233/sistemas-distribuidos-2026-b-g2-Juan-Pablo-Borrero/blob/main/11-week/workshop/07-runbook.md#4-loyaltystickerlatencyfastburn
+      # 12:25: five clean minutes after the fix clear the fast page; the slow one is still firing at 12:40 and clears by 12:50.
+      - {eval_time: 1705m, alertname: LoyaltyStickerErrorBudgetFastBurn, exp_alerts: []}
+      - {eval_time: 1720m, alertname: LoyaltyStickerErrorBudgetSlowBurn, exp_alerts: [{exp_labels: {severity: page, service: loyalty-api, slo: SLO-LOY-1, owner: juan-pablo-borrero}, exp_annotations: {summary: "Sticker grants failing 12.5% over 6 h (budget burning 6x)", description: "A sustained share above 3 % of failed grants; the 30-day budget of 136 grants runs out in 5 days.", runbook_url: "https://github.com/JUANDAX233/sistemas-distribuidos-2026-b-g2-Juan-Pablo-Borrero/blob/main/11-week/workshop/07-runbook.md#2-loyaltystickererrorbudgetslowburn"}}]}
+      - {eval_time: 1730m, alertname: LoyaltyStickerErrorBudgetSlowBurn, exp_alerts: []}
