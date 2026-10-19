@@ -30,7 +30,7 @@ step 6 commits. Steps 7-10 happen seconds later, in a different process, with no
 sequenceDiagram
     autonumber
     participant APP as loyalty-app
-    participant GW as api-gateway (NGINX)
+    participant GW as barber-saas-api-gateway (NGINX)
     participant LOY as loyalty-api
     participant LDB as loyalty-db
     participant APPT as appointment-api
@@ -54,8 +54,8 @@ sequenceDiagram
     WK->>LOY: POST /internal/v1/outbox-events/{id}/published [trace W]
 ```
 
-`T` is the journey's `trace_id`; `a1`, `g1`, `l2`, `l3`, `w1` are parent span ids. There is no
-broker (ADR-016), so the "message header" is the outbox row: a `trace_parent` field written
+`T` is the journey's `trace_id`; `a1`, `g1`, `l2`, `l3`, `w1` are parent span ids. ADR-016 uses no
+broker, so the "message header" is the outbox row: a `trace_parent` field written
 next to `correlation_id` in `loyalty.outbox_event` and carried in the envelope. The polling run
 itself (steps 7 and 10) is its own trace `W`, because one run serves events from many requests.
 
