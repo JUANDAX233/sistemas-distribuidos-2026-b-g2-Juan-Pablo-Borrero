@@ -1,0 +1,51 @@
+# promtool test rules 06-alerts.test.yml - checks the thresholds and the low-traffic guard.
+rule_files:
+  - 06-alerts.yml
+
+evaluation_interval: 30s
+
+tests:
+  # Midday peak: 3 grants per minute, 10 % of them failed (appointment-api timing out).
+  - interval: 1m
+    input_series:
+      - series: 'loyalty_sticker_requests_total{outcome="failed"}'
+        values: '0+0.3x90'
+      - series: 'loyalty_sticker_requests_total{outcome="granted"}'
+        values: '0+2.7x90'
+    alert_rule_test:
+      - eval_time: 70m
+        alertname: LoyaltyStickerErrorBudgetFastBurn
+        exp_alerts:
+          - exp_labels: {severity: page, service: loyalty-api, slo: SLO-LOY-1, owner: juan-pablo-borrero}
+            exp_annotations:
+              summary: "Sticker grants failing 10% over 1 h (budget burning 14.4x)"
+              description: "More than 7.2 % of POST /api/v1/loyalty/stickers answer 500; check appointment-api first (dependency.timeout)."
+              runbook_url: https://github.com/JUANDAX233/sistemas-distribuidos-2026-b-g2-Juan-Pablo-Borrero/blob/main/11-week/workshop/07-runbook.md#1-loyaltystickererrorbudgetfastburn
+
+  # Opening time: one grant every 5 minutes, half of them failed. 12 grants in the hour stay
+  # under the guard of 20, so nobody is paged for six failed taps.
+  - interval: 1m
+    input_series:
+      - series: 'loyalty_sticker_requests_total{outcome="failed"}'
+        values: '0+0.1x90'
+      - series: 'loyalty_sticker_requests_total{outcome="granted"}'
+        values: '0+0.1x90'
+    alert_rule_test:
+      - eval_time: 70m
+        alertname: LoyaltyStickerErrorBudgetFastBurn
+        exp_alerts: []
+
+  # Healthy morning: 2 grants per minute, 1 failure in 200 (0.5 %, the budget rate): no page.
+  - interval: 1m
+    input_series:
+      - series: 'loyalty_sticker_requests_total{outcome="failed"}'
+        values: '0+0.01x90'
+      - series: 'loyalty_sticker_requests_total{outcome="granted"}'
+        values: '0+1.99x90'
+    alert_rule_test:
+      - eval_time: 70m
+        alertname: LoyaltyStickerErrorBudgetFastBurn
+        exp_alerts: []
+      - eval_time: 70m
+        alertname: LoyaltyStickerErrorBudgetSlowBurn
+        exp_alerts: []
