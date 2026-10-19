@@ -5,7 +5,7 @@
 - GITHUB_USER: JUANDAX233
 - TEAM: BarberSaaS
 - DOCS_REPO: https://github.com/code-corhuila/barber-saas-docs
-- REFLECTION_DOC: <REFLECTION_DOC_URL>
+- REFLECTION_DOC: https://docs.google.com/document/d/1B3urf8BFh60g9s0vP6rt7NgHMuKrxmlXutj1msSNJV8/edit?usp=sharing
 - JOURNEY: A barber grants a loyalty sticker to a client (HU-LOY-001) - loyalty-app -> api-gateway -> loyalty-api -> appointment-api, then StickerGranted via outbox_event -> worker -> notifications-api
 <!-- CONFIG-END -->
 
