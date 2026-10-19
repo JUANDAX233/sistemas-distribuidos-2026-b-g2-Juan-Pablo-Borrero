@@ -1,9 +1,9 @@
 # Week 11 Workshop - Observability, SLOs and Incident Response
 
 <!-- CONFIG-START -->
-- FULL_NAME: <FULL_NAME>
-- GITHUB_USER: <GITHUB_USER>
-- TEAM: <TEAM>
+- FULL_NAME: Juan Pablo Borrero Morales
+- GITHUB_USER: JUANDAX233
+- TEAM: BarberSaaS
 - DOCS_REPO: https://github.com/code-corhuila/barber-saas-docs
 - REFLECTION_DOC: <REFLECTION_DOC_URL>
 - JOURNEY: A barber grants a loyalty sticker to a client (HU-LOY-001) - loyalty-app -> api-gateway -> loyalty-api -> appointment-api, then StickerGranted via outbox_event -> worker -> notifications-api
