@@ -1,0 +1,12 @@
+server:
+  port: ${PORT:8080}
+spring:
+  application:
+    name: loyalty-api
+logging:
+  structured:
+    format:
+      console: co.edu.corhuila.barbersaas.loyalty.observability.LogContractFormatter
+loyalty:
+  version: 2.0.0
+  environment: ${ENVIRONMENT:dev}
