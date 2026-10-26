@@ -5,8 +5,8 @@
 # Weekly Status - Week 06
 
 <!-- CONFIG-START - must match your profile repo (username/username) CONFIG -->
-- FULL_NAME: Juan pablo Borrero morales
-- GITHUB_USER: Juanpablopdr
+- FULL_NAME: Juan Pablo Borrero Morales
+- GITHUB_USER: JUANDAX233
 - TEAM: BarberSaaS
 - SPRINT_GOAL: Design, isolate, and structure the core domain models and bounded contexts for BarberSaaS (Auth, Appointments, Walk-ins, Loyalty, and Finance).
 <!-- CONFIG-END -->
@@ -44,3 +44,4 @@
 
 ## 6. Evidence links
 -![WEEK6PLNING](WEEK6PLNING.jpg)
+- Pull requests: none this week. I opened no pull request in any `code-corhuila` repository between 2026-09-07 and 2026-09-13; my first one is [barber-saas-docs #17](https://github.com/code-corhuila/barber-saas-docs/pull/17) (week 07). The work above is design work, not yet in a repository.

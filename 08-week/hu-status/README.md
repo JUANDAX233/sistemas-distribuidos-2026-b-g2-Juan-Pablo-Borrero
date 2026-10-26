@@ -14,7 +14,7 @@
 ## 1. User stories worked this week
 | HU ID | Title | Status (todo/doing/done) | Evidence (PR or commit URL) |
 |---|---|---|---|
-| GOV-AGILE-08-A | SPEC-008: WIP limit, sprint tracking, HU split (10→18), retroactive sizing, story map, MVP2 backlog | doing | `barber-saas-docs`, branch `docs/008-agile-process-executable` (not pushed yet — pending commit authorization) |
+| GOV-AGILE-08-A | SPEC-008: WIP limit, sprint tracking, HU split (10→18), retroactive sizing, story map, MVP2 backlog | doing | `barber-saas-docs` commit [`6d7436f`](https://github.com/code-corhuila/barber-saas-docs/commit/6d7436f) (2026-09-27) on branch `docs/008-agile-process-executable`; published later and reviewed as PRs #52–#54 in week 09 |
 | GOV-AGILE-08-B | SPEC-009: create GitHub Project board for `barber-saas` (CODE) | todo | Blocked — `gh auth status` has no active session |
 | GOV-AGILE-08-C | SPEC-010: fill Session 1/Session 2/hu-status for the active week (this file) | doing | This weekly repo, branch `docs/010-week-08-session-evidence` (not pushed yet) |
 
@@ -38,20 +38,20 @@
 
 ## 3. Blockers and risks
 - **Nothing is committed or pushed yet.** All SPEC-008 and SPEC-010 changes exist only in
-  local working trees, on local branches, pending Daniel's explicit authorization to
+  local working trees, on local branches, pending explicit authorization to
   `git commit`/`git push` (non-negotiable rule in every repo's `CLAUDE.md`). This week's
   "Evidence" column above points to branches/paths, not live GitHub URLs, because none
   exist yet.
 - SPEC-009 (GitHub Project board) is fully blocked: `gh auth status` shows no active
   session in this environment.
 - The sprint numbering used in `15-project-control/sprint-status.md` (Sprint 1 = week of
-  2026-08-31) is an **inference** from commit dates, not a confirmed fact — needs Daniel's
+  2026-08-31) is an **inference** from commit dates, not a confirmed fact — needs the team's
   confirmation.
-- No real planning-poker session with the team (Carlos, Juan Pablo, Carolay) happened this
+- No real planning-poker session with the team (Daniel, Carlos, Carolay) happened this
   week — the MVP2 backlog estimates are explicitly left as "pending" rather than invented.
 
 ## 4. Plan for next week
-- Get explicit authorization from Daniel to commit and push SPEC-008 (DOCS) and SPEC-010
+- Get explicit authorization to commit and push SPEC-008 (DOCS) and SPEC-010
   (this repo), open the corresponding PRs, and get them reviewed/merged.
 - Resolve `gh auth login` and re-run SPEC-009 to actually create the GitHub Project board.
 - Run a real, live planning-poker session with the team to replace the "pending" estimates
@@ -67,7 +67,9 @@
 - [x] No secrets; config via environment variables — no secrets touched in any of the files edited
 
 ## 6. Evidence links
-- `barber-saas-docs`, local branch `docs/008-agile-process-executable` (not pushed — no PR/commit URL exists yet)
+- Pull requests: none this week. I opened no pull request between 2026-09-21 and 2026-09-27; this week's work was reviewed through PRs #52–#54, opened in week 09.
+- https://github.com/code-corhuila/barber-saas-docs/commit/6d7436f — the SPEC-008 commit of 2026-09-27 (683 lines), now on `origin/docs/008-agile-process-executable`
+- `barber-saas-docs`, branch `docs/008-agile-process-executable` (local only when this report was written)
 - This repo, local branch `docs/010-week-08-session-evidence` (not pushed — no PR/commit URL exists yet)
 - `_ecosistema/specs/SPEC-008-proceso-agil-ejecutable.md`, `SPEC-009-board-github-projects-code.md`, `SPEC-010-sesiones-semana-activa-weekly.md`
 - `_ecosistema/handoffs/HANDOFF-008.md`, `HANDOFF-009.md`, `HANDOFF-010.md`

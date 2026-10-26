@@ -14,7 +14,7 @@
 ## 1. User stories worked this week
 | HU ID | Title | Status (todo/doing/done) | Evidence (PR or commit URL) |
 |---|---|---|---|
-| GOV-ARCHIVE-01 | Add a related-repositories index to `barber-saas-docs` pointing to the `barber-saas` (product) and weekly-grading repos | done | `barber-saas-docs` commit `5b9af66` on branch `docs/005-archive-related-repos` |
+| GOV-ARCHIVE-01 | Add a related-repositories index to `barber-saas-docs` pointing to the `barber-saas` (product) and weekly-grading repos | done | [barber-saas-docs PR #17](https://github.com/code-corhuila/barber-saas-docs/pull/17) · commit [`5b9af66`](https://github.com/code-corhuila/barber-saas-docs/commit/5b9af6650511a3b25e11178438db45fd8e8dfbf3) on branch `docs/005-archive-related-repos` |
 
 ## 2. My individual contribution
 - Added `99-archive/related-repositories.md` to `barber-saas-docs`, documenting the three repos of the ecosystem (docs, product code, individual weekly deliverable), their scope, and their remotes.
@@ -40,5 +40,6 @@
 - [x] No secrets; config via environment variables
 
 ## 6. Evidence links
+- https://github.com/code-corhuila/barber-saas-docs/pull/17 (opened 2026-09-17; later closed without merge — its commit was left out of the SPEC-008 PRs, see week 09)
 - https://github.com/code-corhuila/barber-saas-docs/commit/5b9af6650511a3b25e11178438db45fd8e8dfbf3
 - https://github.com/code-corhuila/barber-saas-docs/tree/docs/005-archive-related-repos
