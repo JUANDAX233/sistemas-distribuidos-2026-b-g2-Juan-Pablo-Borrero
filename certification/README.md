@@ -18,8 +18,8 @@
 
 | Date | Hours | Chapters or labs | Evidence file |
 |---|---|---|---|
-| 2026-10-29 | <h> | Pre-class Guidance; Chapter 1 Architecture Design Methodology on Huawei Cloud | evidence/01-chapter-01.png |
-| Total | <sum> | | |
+| 2026-10-29 | 2 | Pre-class Guidance; Chapter 1 Architecture Design Methodology on Huawei Cloud | evidence/01-chapter-01.png |
+| Total | 2 | | |
 
 ## Labs
 
