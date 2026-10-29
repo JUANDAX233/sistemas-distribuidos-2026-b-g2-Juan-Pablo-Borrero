@@ -1,0 +1,51 @@
+name: Security gates
+
+# Proposal for barber-saas-platform-admin-api (.github/workflows/security.yml).
+# Three gates on every pull request: secrets, vulnerable dependencies and the
+# negative authorization test of story code-corhuila/barber-saas-docs#159.
+
+on:
+  pull_request:
+    branches: [develop, qa, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  secret-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: OWASP dependency-check (fails on CVSS 7 or higher)
+        run: mvn -B org.owasp:dependency-check-maven:10.0.4:aggregate -DfailBuildOnCVSS=7
+
+  authorization-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Negative test - worker token without scope on subscriptions/expire
+        run: mvn -B -pl platform-admin-app -am test -Dtest=WorkerScopeHttpTest -Dsurefire.failIfNoSpecifiedTests=false
