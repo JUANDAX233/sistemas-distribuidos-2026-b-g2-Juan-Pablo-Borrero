@@ -21,7 +21,8 @@
 | 2026-10-29 | 2 | Pre-class Guidance; Chapter 1 Architecture Design Methodology on Huawei Cloud | evidence/01-chapter-01.png |
 | 2026-10-29 | 1 | Chapter 2 Typical Service Implementation Solutions on the Cloud | evidence/02-chapter-02.png |
 | 2026-10-31 | 3 | Chapter 3 Cloud Compute Solution Design | evidence/03-chapter-03.png |
-| Total | 6 | | |
+| 2026-10-31 | 3 | Chapter 4 Cloud Storage Solution Design | evidence/04-chapter-04.png |
+| Total | 9 | | |
 
 ## Labs
 
