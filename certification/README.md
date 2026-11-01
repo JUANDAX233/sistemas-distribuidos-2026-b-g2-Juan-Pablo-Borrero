@@ -22,7 +22,8 @@
 | 2026-10-29 | 1 | Chapter 2 Typical Service Implementation Solutions on the Cloud | evidence/02-chapter-02.png |
 | 2026-10-31 | 3 | Chapter 3 Cloud Compute Solution Design | evidence/03-chapter-03.png |
 | 2026-10-31 | 3 | Chapter 4 Cloud Storage Solution Design | evidence/04-chapter-04.png |
-| Total | 9 | | |
+| 2026-11-01 | 4 | Chapter 5 Cloud Network Solution Design | evidence/05-chapter-05.png |
+| Total | 13 | | |
 
 ## Labs
 
