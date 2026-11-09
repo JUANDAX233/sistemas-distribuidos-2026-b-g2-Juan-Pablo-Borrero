@@ -43,7 +43,7 @@
   "Calificar" shown only once (`ed393ed`), and the finance `processed_event` table and automatic
   income (`271009f`, `a8aa7cf`). I promoted them with the rest and he stays as their author.
 - **Huawei course.** Chapters 7 (Cloud Security), 8 (Cloud O&M), 9 (Distributed Architecture) and
-  10 (Highly Scalable System) with a screenshot of each one; 13 hours this week, 29 in total.
+  10 (Highly Scalable System) with a screenshot of each one; 14 hours this week, 30 in total.
 
 ## 3. Blockers and risks
 - **No `[3.0.0]` changelog in my five repos.** The release to `main` cannot use them until that
@@ -134,5 +134,5 @@
 | Date | Work | Evidence |
 |---|---|---|
 | 2026-11-05 | Local test runs before each promotion (Maven, npm, Liquibase on PostgreSQL 16.4) | Output summarized in the body of each PR above |
-| 2026-11-07 to 2026-11-08 | Huawei course, chapters 7 to 10 (13 hours) | [`certification/evidence/`](../../certification/evidence/) |
+| 2026-11-07 to 2026-11-08 | Huawei course, chapters 7 to 10 (14 hours) | [`certification/evidence/`](../../certification/evidence/) |
 <!-- FULL-EVIDENCE-END -->
