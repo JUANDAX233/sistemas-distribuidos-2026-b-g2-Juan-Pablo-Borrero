@@ -28,7 +28,8 @@
 | 2026-11-08 | 3 | Chapter 8 Cloud O&M Solution Design | evidence/08-chapter-08.jpeg |
 | 2026-11-08 | 4 | Chapter 9 Distributed Architecture Design | evidence/09-chapter-09.jpeg |
 | 2026-11-08 | 4 | Chapter 10 Highly Scalable System Design | evidence/10-chapter-10.jpeg |
-| Total | 30 | | |
+| 2026-11-08 | 3 | Chapter 11 Disaster Recovery System Design | evidence/11-chapter-11.jpeg |
+| Total | 33 | | |
 
 ## Labs
 
