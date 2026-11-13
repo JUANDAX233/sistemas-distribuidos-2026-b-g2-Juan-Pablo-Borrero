@@ -43,10 +43,10 @@
 
 | Evidence file | Lab name | What I built | What failed first and how I fixed it |
 |---|---|---|---|
-| evidence/15-lab-1.png | Design Cases and Practices of an O&M Solution | <One sentence> | <One sentence> |
-| evidence/16-lab-2.jpg | High-Performance Network Solution | <One sentence> | <One sentence> |
-| evidence/17-lab-3.jpg | Highly Reliable Database Solution | <One sentence> | <One sentence> |
-| evidence/18-lab-4.jpg | Cloud Computing and Storage | <One sentence> | <One sentence> |
+| evidence/15-lab-1.png | Design Cases and Practices of an O&M Solution | I connected an ECS to a Log Tank Service log group through ICAgent and set a Cloud Eye CPU alarm that notifies through SMN. | No logs reached LTS because the ingestion rule pointed to a log path that did not exist on the ECS; I corrected the path and the lines appeared. |
+| evidence/16-lab-2.jpg | High-Performance Network Solution | I built two VPCs joined by VPC peering, and gave a private ECS internet access through a NAT Gateway SNAT rule with an EIP. | The ECS in one VPC could not ping the other because the peering had no routes; I added the peer CIDR to the route table of both VPCs. |
+| evidence/17-lab-3.jpg | Highly Reliable Database Solution | I created an RDS primary/standby instance, connected to it from an ECS, ran a manual switchover and restored a backup to check that the data stayed consistent. | The ECS could not connect to RDS because the security group did not allow the database port; I added an inbound rule for the ECS subnet only. |
+| evidence/18-lab-4.jpg | Cloud Computing and Storage | I deployed the Discuz! forum on an ECS with its database on RDS, made a private image of that ECS and launched a second server from the image. | The forum page did not load from the browser because port 80 was closed in the security group; I opened it and the installer ran. |
 
 ## Final exam
 
@@ -57,4 +57,9 @@
 
 ## Skills summary
 
-<5 to 7 lines in English, first person, naming at least three concrete design techniques from the course.>
+In this course I learned to review a design against five principles: reliability, security, performance efficiency, cost and operations.
+I can choose a disaster recovery pattern (backup and restore, active-standby or active-active) from the RTO and RPO a system needs.
+I applied it to BarberSaaS, moving PostgreSQL to an RDS primary/standby pair with WAL archived to a second region.
+I learned to scale stateless services horizontally with an autoscaling policy on a measured metric, keeping locks and sessions out of the instances.
+In the labs I built VPC peering, NAT Gateway, RDS switchover and centralized logs with LTS and Cloud Eye alarms.
+I also learned to automate deployment as a pipeline of build, test, image, deploy and rollback stages tied to release tags.
