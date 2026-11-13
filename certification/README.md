@@ -12,7 +12,7 @@
 | Course | HCCDP-Solution Architectures Course |
 | Course link | https://e.huawei.com/en/talent/ict-academy/#/ictcourses-detail?courseId=6WtKiPd1S1YelBB0AUbE1vXlPgk |
 | Start date | 2026-10-28 |
-| Completion date | <YYYY-MM-DD> |
+| Completion date | 2026-11-13 |
 
 ## Study log
 
@@ -31,22 +31,29 @@
 | 2026-11-08 | 3 | Chapter 11 Disaster Recovery System Design | evidence/11-chapter-11.jpeg |
 | 2026-11-10 | 2 | Chapter 12 Automated Deployment | evidence/12-chapter-12.jpeg |
 | 2026-11-10 | 3 | Chapter 13 Containers and Agility | evidence/13-chapter-13.png |
-| Total | 38 | | |
+| 2026-11-11 | 3 | Chapter 14 Huawei Cloud Advanced Services | evidence/14-chapter-14.jpg |
+| 2026-11-11 | 3 | Lab 1 Design Cases and Practices of an O&M Solution | evidence/15-lab-1.png |
+| 2026-11-12 | 2 | Lab 2 High-Performance Network Solution | evidence/16-lab-2.jpg |
+| 2026-11-12 | 2 | Lab 3 Highly Reliable Database Solution | evidence/17-lab-3.jpg |
+| 2026-11-12 | 2 | Lab 4 Cloud Computing and Storage | evidence/18-lab-4.jpg |
+| 2026-11-13 | 2 | Final Exam (HCCDP-Solution Architectures Course Mock Exam, 90 minutes) | evidence/19-final-exam.png |
+| Total | 52 | | |
 
 ## Labs
 
 | Evidence file | Lab name | What I built | What failed first and how I fixed it |
 |---|---|---|---|
-| evidence/15-lab-1.png | <Lab name> | <One sentence> | <One sentence> |
-| evidence/16-lab-2.png | <Lab name> | <One sentence> | <One sentence> |
-| evidence/17-lab-3.png | <Lab name> | <One sentence> | <One sentence> |
-| evidence/18-lab-4.png | <Lab name> | <One sentence> | <One sentence> |
+| evidence/15-lab-1.png | Design Cases and Practices of an O&M Solution | <One sentence> | <One sentence> |
+| evidence/16-lab-2.jpg | High-Performance Network Solution | <One sentence> | <One sentence> |
+| evidence/17-lab-3.jpg | Highly Reliable Database Solution | <One sentence> | <One sentence> |
+| evidence/18-lab-4.jpg | Cloud Computing and Storage | <One sentence> | <One sentence> |
 
 ## Final exam
 
-- Score: <score>
-- Date: <YYYY-MM-DD>
+- Score: 85/100 (passing score 70)
+- Date: 2026-11-13
 - Evidence: evidence/19-final-exam.png
+- Certificate: certificate.pdf (Certificate of Completion, code ICT20261114000017, issued 2026-11-14)
 
 ## Skills summary
 
